@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import bcrypt
 import secrets
+import os
 
 from . import storage
 
@@ -25,6 +26,16 @@ class TokenRequest(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
+
+
+class NotificationPrefsIn(BaseModel):
+    email: str | None = None
+    telegram: str | None = None
+    telegram_chat_id: int | None = None
+
+
+class NotificationPrefs(NotificationPrefsIn):
+    pass
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
@@ -69,3 +80,27 @@ def token_json(req: TokenRequest):
 @router.get('/me', response_model=UserOut)
 def me(user: dict = Depends(get_current_user)):
     return {'id': user['id'], 'username': user['username'], 'role': user['role']}
+
+
+@router.put('/me/prefs', response_model=NotificationPrefs)
+def update_prefs(
+    prefs: NotificationPrefsIn, user: dict = Depends(get_current_user)
+):
+    data = storage.load_data()
+    user_rec = next(u for u in data['users'] if u['id'] == user['id'])
+    current = user_rec.get('notification_prefs', {})
+    new_vals = prefs.model_dump(exclude_unset=True)
+    current.update(new_vals)
+    user_rec['notification_prefs'] = current
+    storage.save_data(data)
+    return current
+
+
+@router.post('/me/notify-test')
+def notify_test(user: dict = Depends(get_current_user)):
+    data = storage.load_data()
+    user_rec = next(u for u in data['users'] if u['id'] == user['id'])
+    prefs = user_rec.get('notification_prefs', {})
+    dry = os.getenv('NOTIFY_DRY_RUN', '0') == '1'
+    print(f"notify-test: user {user['id']} prefs={prefs} dry_run={dry}")
+    return {'ok': True, 'dry_run': dry}
