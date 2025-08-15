@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "role": "admin",
+      "is_active": true,
+      "deleted_at": null
+    },
+    {
+      "id": 2,
+      "username": "alice",
+      "role": "user",
+      "is_active": true,
+      "deleted_at": null
+    },
+    {
+      "id": 3,
+      "username": "bob",
+      "role": "user",
+      "is_active": true,
+      "deleted_at": null
+    }
+  ]
+}
