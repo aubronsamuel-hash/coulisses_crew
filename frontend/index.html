@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Missions</title>
+</head>
+<body>
+  <h1>Missions</h1>
+  <button id="new">Nouvelle mission</button>
+  <table border="1" id="missions">
+    <thead><tr><th>ID</th><th>Title</th><th>Status</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="form" style="display:none;">
+    <h2>Create Mission</h2>
+    <label>Title <input type="text" id="title" /></label><br />
+    <label>Start <input type="datetime-local" id="start" /></label><br />
+    <label>End <input type="datetime-local" id="end" /></label><br />
+    <button id="save">Save</button>
+  </div>
+
+<script>
+async function loadMissions(){
+  const res = await fetch('/missions');
+  const missions = await res.json();
+  const tbody=document.querySelector('#missions tbody');
+  tbody.innerHTML='';
+  missions.forEach(m=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${m.id}</td><td>${m.title}</td><td>${m.status}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('new').onclick=()=>{
+  document.getElementById('form').style.display='block';
+};
+
+document.getElementById('save').onclick=async()=>{
+  const payload={
+    title: document.getElementById('title').value,
+    start: document.getElementById('start').value,
+    end: document.getElementById('end').value,
+    status: 'draft',
+    positions: []
+  };
+  await fetch('/missions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  document.getElementById('form').style.display='none';
+  loadMissions();
+};
+
+loadMissions();
+</script>
+</body>
+</html>
