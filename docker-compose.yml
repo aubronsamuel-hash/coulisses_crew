@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  api:
+    image: python:3.11-slim
+    working_dir: /app/backend
+    volumes:
+      - ./:/app/backend
+      - data:/data
+    command: sh -c "pip install -r requirements.txt watchfiles && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+  web:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - data:/data
+    command: sh -c "npm install -g serve && serve -s . -l 5173"
+    ports:
+      - "5173:5173"
+volumes:
+  data:
