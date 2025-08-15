@@ -78,6 +78,16 @@ app.post('/admin/reset', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
+app.get('/admin/notifications/diagnostic', requireAdmin, (req, res) => {
+  console.log('notifications diagnostic');
+  res.json({ ok: true });
+});
+
+app.post('/admin/notifications/diagnostic/test', requireAdmin, (req, res) => {
+  console.log('notifications diagnostic test');
+  res.json({ ok: true });
+});
+
 module.exports = { app, initialData, loadData, saveData };
 
 if (require.main === module) {
