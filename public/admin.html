@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Users</title>
+</head>
+<body>
+  <h1>Admin Users</h1>
+  <table id="users">
+    <thead>
+      <tr><th>ID</th><th>Username</th><th>Role</th><th>Active</th><th></th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    async function load() {
+      const res = await fetch('/admin/users', { headers: {'x-user-role': 'admin'} });
+      const data = await res.json();
+      const tbody = document.querySelector('#users tbody');
+      tbody.innerHTML = '';
+      data.users.forEach(u => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${u.id}</td>
+          <td>${u.username}</td>
+          <td>
+            <select>
+              <option value="admin">admin</option>
+              <option value="user">user</option>
+              <option value="moderator">moderator</option>
+            </select>
+          </td>
+          <td>${u.is_active}</td>
+          <td><button>Save</button></td>
+        `;
+        const select = tr.querySelector('select');
+        select.value = u.role;
+        tr.querySelector('button').onclick = async () => {
+          await fetch('/admin/users/' + u.id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' },
+            body: JSON.stringify({ role: select.value })
+          });
+        };
+        tbody.appendChild(tr);
+      });
+    }
+    load();
+  </script>
+</body>
+</html>
