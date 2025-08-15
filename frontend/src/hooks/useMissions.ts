@@ -19,7 +19,7 @@ export function useMissions(token: string | null) {
     async (mission: Record<string, unknown>) => {
       if (!token) return;
       const created = await missionService.create(token, mission);
-      setMissions((m) => [...m, created]);
+      setMissions((m: Mission[]) => [...m, created]);
     },
     [token]
   );
@@ -28,7 +28,7 @@ export function useMissions(token: string | null) {
     async (id: number, mission: Record<string, unknown>) => {
       if (!token) return;
       const updated = await missionService.update(token, id, mission);
-      setMissions((m) => m.map((mi) => (mi.id === id ? updated : mi)));
+      setMissions((m: Mission[]) => m.map((mi: Mission) => (mi.id === id ? updated : mi)));
     },
     [token]
   );
@@ -37,7 +37,7 @@ export function useMissions(token: string | null) {
     async (id: number) => {
       if (!token) return;
       await missionService.remove(token, id);
-      setMissions((m) => m.filter((mi) => mi.id !== id));
+      setMissions((m: Mission[]) => m.filter((mi: Mission) => mi.id !== id));
     },
     [token]
   );
@@ -46,7 +46,7 @@ export function useMissions(token: string | null) {
     async (id: number, userId: number) => {
       if (!token) return;
       const updated = await missionService.assign(token, id, userId);
-      setMissions((m) => m.map((mi) => (mi.id === id ? updated : mi)));
+      setMissions((m: Mission[]) => m.map((mi: Mission) => (mi.id === id ? updated : mi)));
     },
     [token]
   );
