@@ -3,6 +3,7 @@ services:
   api:
     image: python:3.11-slim
     working_dir: /app/backend
+    env_file: .env
     volumes:
       - ./:/app/backend
       - data:/data
@@ -12,6 +13,7 @@ services:
   web:
     image: node:18
     working_dir: /app
+    env_file: .env
     volumes:
       - ./frontend:/app
       - data:/data

@@ -6,6 +6,8 @@ Minimal authentication service using FastAPI with bcrypt hashing.
 
 A docker-compose setup runs the API and the front-end.
 
+Copy `.env.example` to `.env` to customize settings like the API URL.
+
 ### Windows (PowerShell)
 
 ```powershell
@@ -20,6 +22,15 @@ A docker-compose setup runs the API and the front-end.
 docker compose up -d --build
 docker compose exec api pytest -q
 docker compose down -v
+```
+
+### Testing
+
+Run the Node and Python test suites locally:
+
+```bash
+npm test
+pytest -q
 ```
 
 ### Local URLs
