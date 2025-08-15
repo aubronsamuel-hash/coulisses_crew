@@ -3,3 +3,4 @@ uvicorn
 bcrypt
 pytest
 httpx
+python-dotenv
